@@ -1,41 +1,45 @@
 package com.example.recipe_tracker.ingredients
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.*
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recipe_tracker.R
 
-
-// Data Class for Ingredients
-data class Ingredient(
-    val name: String,
-    val grams: Int,
-    val calories: Int,
-    val protein: Double,
-    val fat: Double,
-    val carbs: Double
-)
 
 // Main Ingredients Screen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun IngredientsPage() {
+fun IngredientsPage(viewModel: IngredientsViewModel = viewModel()) {
+    val ingredients by viewModel.ingredients.collectAsStateWithLifecycle()
     var showDialog by remember { mutableStateOf(false) }
-    val ingredients = remember { mutableStateListOf<Ingredient>() }
 
     Scaffold(
         topBar = {
@@ -53,14 +57,19 @@ fun IngredientsPage() {
         }
     )
     { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .padding(16.dp)
+        LazyColumn(
+            modifier = Modifier.padding(padding),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         )
         {
-            ingredients.forEach {
-                Text("${it.name} - ${it.grams}g (P ${it.protein} / F ${it.fat} / C ${it.carbs}")
+            items(ingredients, key = { it.id }) { item ->
+                ListItem(
+                    headlineContent = { Text(item.name) },
+                    supportingContent = {
+                        Text("${item.grams} g  |  CAL ${item.calories}  P ${item.protein}  F ${item.fat}  C ${item.carbs}")
+                    }
+                )
             }
         }
     }
@@ -69,8 +78,8 @@ fun IngredientsPage() {
     if (showDialog) {
         AddIngredientDialog(
             onDismiss = {showDialog = false },
-            onConfirm = { ingredient ->
-                ingredients.add(ingredient)
+            onConfirm = { name, grams, calories, protein, fat, carbs ->
+                viewModel.addIngredient(name, grams, calories, protein, fat, carbs)
                 showDialog = false
             }
         )
@@ -82,7 +91,7 @@ fun IngredientsPage() {
 @Composable
 fun AddIngredientDialog(
     onDismiss: () -> Unit,
-    onConfirm: (Ingredient) -> Unit
+    onConfirm: (name: String, grams: Int, calories: Int, protein: Double, fat: Double, carbs: Double) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var grams by remember { mutableStateOf("") }
@@ -126,15 +135,13 @@ fun AddIngredientDialog(
                 enabled = isValid,
                 onClick = {
                     onConfirm(
-                        Ingredient(
-                            name = name.trim(),
-                            grams = grams.toInt(),
-                            calories = calories.toInt(),
-                            protein = grams.toDouble(),
-                            fat = fat.toDouble(),
-                            carbs = carbs.toDouble()
+                        name.trim(),
+                        grams.toInt(),
+                        calories.toInt(),
+                        grams.toDouble(),
+                        fat.toDouble(),
+                        carbs.toDouble()
                         )
-                    )
                 }
             ) { Text("Add") }
         },
