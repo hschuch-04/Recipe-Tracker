@@ -1,52 +1,61 @@
 package com.example.recipe_tracker.ingredients
 
+import android.widget.Toast
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recipe_tracker.R
+import com.example.recipe_tracker.database.IngredientsViewModel
+import com.example.recipe_tracker.reusables.DecimalField
+import com.example.recipe_tracker.reusables.NumberField
 
 
 // Main Ingredients Screen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun IngredientsPage(viewModel: IngredientsViewModel = viewModel()) {
+fun IngredientsPage(
+    viewModel: IngredientsViewModel = viewModel(),
+    bottomBar: @Composable () -> Unit
+) {
     val ingredients by viewModel.ingredients.collectAsStateWithLifecycle()
+    val toast = Toast.makeText(LocalContext.current, "Ingredient has been removed.", Toast.LENGTH_SHORT)
     var showDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = { Text("Ingredients") }
             )
         },
+        bottomBar = bottomBar,
         floatingActionButton = {
             FloatingActionButton(onClick = { showDialog = true }) {
                 Icon(
@@ -59,12 +68,19 @@ fun IngredientsPage(viewModel: IngredientsViewModel = viewModel()) {
     { padding ->
         LazyColumn(
             modifier = Modifier.padding(padding),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            contentPadding = PaddingValues(4.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         )
         {
             items(ingredients, key = { it.id }) { item ->
                 ListItem(
+                    modifier = Modifier.combinedClickable(
+                        onClick = {},
+                        onLongClick = {
+                            viewModel.deleteIngredient(item)
+                            toast.show()
+                        }
+                    ),
                     headlineContent = { Text(item.name) },
                     supportingContent = {
                         Text("${item.grams} g  |  CAL ${item.calories}  P ${item.protein}  F ${item.fat}  C ${item.carbs}")
@@ -84,6 +100,7 @@ fun IngredientsPage(viewModel: IngredientsViewModel = viewModel()) {
             }
         )
     }
+
 }
 
 
@@ -113,7 +130,6 @@ fun AddIngredientDialog(
         title = { Text("Add Ingredient") },
         text = {
             Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 OutlinedTextField(
@@ -149,63 +165,5 @@ fun AddIngredientDialog(
             TextButton(onClick = onDismiss) { Text("Cancel") }
         }
 
-    )
-}
-
-
-// Reusable TextField which will be input to convert to Int
-@Composable
-private fun NumberField(
-    label: String,
-    value: String,
-    last: Boolean = false,
-    onValueChange: (String) -> Unit
-) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = { new ->
-            if (new.isEmpty() || new.matches(Regex("""\d*"""))) {
-                onValueChange(new)
-            }
-        },
-        label = { Text(label) },
-        singleLine = true,
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number,
-            imeAction = if (last) {
-                ImeAction.Done
-            } else {
-                ImeAction.Next
-            }
-        )
-    )
-}
-
-
-// Reusable TextField which will be input to convert to Double
-@Composable
-private fun DecimalField(
-    label: String,
-    value: String,
-    last: Boolean = false,
-    onValueChange: (String) -> Unit
-) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = { new ->
-            if (new.isEmpty() || new.matches(Regex("""\d*\.?\d*"""))) {
-                onValueChange(new)
-            }
-        },
-        label = { Text(label) },
-        singleLine = true,
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Decimal,
-            imeAction = if (last) {
-                ImeAction.Done
-            } else {
-                ImeAction.Next
-            }
-        )
     )
 }

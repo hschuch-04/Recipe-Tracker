@@ -1,11 +1,11 @@
-package com.example.recipe_tracker.ingredients
+package com.example.recipe_tracker.database
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.recipe_tracker.database.AppDatabase
-import com.example.recipe_tracker.database.IngredientEntity
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class IngredientsViewModel(app: Application) : AndroidViewModel(app) {
@@ -46,3 +46,6 @@ class IngredientsViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch { dao.delete(ingredient) }
     }
 }
+
+
+
