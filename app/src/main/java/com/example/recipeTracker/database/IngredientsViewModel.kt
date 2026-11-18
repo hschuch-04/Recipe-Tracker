@@ -15,7 +15,7 @@ class IngredientsViewModel(app: Application) : AndroidViewModel(app) {
         dao.viewAll().stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = emptyList()
+            initialValue = emptyList(),
         )
 
     // Adds the Ingredients to the table
@@ -25,7 +25,7 @@ class IngredientsViewModel(app: Application) : AndroidViewModel(app) {
         calories: Int,
         protein: Double,
         fat: Double,
-        carbs: Double
+        carbs: Double,
     ) {
         viewModelScope.launch {
             dao.insert(
@@ -35,8 +35,8 @@ class IngredientsViewModel(app: Application) : AndroidViewModel(app) {
                     calories = calories,
                     protein = protein,
                     fat = fat,
-                    carbs = carbs
-                )
+                    carbs = carbs,
+                ),
             )
         }
     }
@@ -46,6 +46,3 @@ class IngredientsViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch { dao.delete(ingredient) }
     }
 }
-
-
-

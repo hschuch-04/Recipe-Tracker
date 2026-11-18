@@ -7,14 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 
-
 // Reusable TextField which will be input to convert to Int
 @Composable
 fun NumberField(
     label: String,
     value: String,
     last: Boolean = false,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
 ) {
     OutlinedTextField(
         value = value,
@@ -25,17 +24,18 @@ fun NumberField(
         },
         label = { Text(label) },
         singleLine = true,
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number,
-            imeAction = if (last) {
-                ImeAction.Done
-            } else {
-                ImeAction.Next
-            }
-        )
+        keyboardOptions =
+            KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction =
+                    if (last) {
+                        ImeAction.Done
+                    } else {
+                        ImeAction.Next
+                    },
+            ),
     )
 }
-
 
 // Reusable TextField which will be input to convert to Double
 @Composable
@@ -43,7 +43,7 @@ fun DecimalField(
     label: String,
     value: String,
     last: Boolean = false,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
 ) {
     OutlinedTextField(
         value = value,
@@ -54,13 +54,15 @@ fun DecimalField(
         },
         label = { Text(label) },
         singleLine = true,
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Decimal,
-            imeAction = if (last) {
-                ImeAction.Done
-            } else {
-                ImeAction.Next
-            }
-        )
+        keyboardOptions =
+            KeyboardOptions(
+                keyboardType = KeyboardType.Decimal,
+                imeAction =
+                    if (last) {
+                        ImeAction.Done
+                    } else {
+                        ImeAction.Next
+                    },
+            ),
     )
 }

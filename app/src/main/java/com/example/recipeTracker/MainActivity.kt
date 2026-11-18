@@ -26,7 +26,6 @@ import com.example.recipeTracker.recipes.AddRecipeScreen
 import com.example.recipeTracker.recipes.RecipesPage
 import com.example.recipeTracker.ui.theme.RecipeTrackerTheme
 
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +58,12 @@ fun AppNav() {
     val recipesVM: RecipesViewModel = viewModel()
 
     val bottomBar: @Composable () -> Unit = {
-        val current = navController.currentBackStackEntryAsState().value?.destination?.route
+        val current =
+            navController
+                .currentBackStackEntryAsState()
+                .value
+                ?.destination
+                ?.route
         NavigationBar {
             NavigationBarItem(
                 selected = current == Routes.RECIPES,
@@ -67,10 +71,10 @@ fun AppNav() {
                 icon = {
                     Icon(
                         painter = painterResource(id = R.drawable.icon_list),
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 },
-                label = { Text("Recipes") }
+                label = { Text("Recipes") },
             )
             NavigationBarItem(
                 selected = current == Routes.INGREDIENTS,
@@ -78,10 +82,10 @@ fun AppNav() {
                 icon = {
                     Icon(
                         painter = painterResource(id = R.drawable.icon_list),
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 },
-                label = { Text("Ingredients") }
+                label = { Text("Ingredients") },
             )
         }
     }
@@ -90,14 +94,14 @@ fun AppNav() {
         composable(Routes.INGREDIENTS) {
             IngredientsPage(
                 viewModel = ingredientsVM,
-                bottomBar = bottomBar
+                bottomBar = bottomBar,
             )
         }
         composable(Routes.RECIPES) {
             RecipesPage(
                 viewModel = recipesVM,
                 onAddClick = { navController.navigate(Routes.ADD_RECIPE) },
-                bottomBar = bottomBar
+                bottomBar = bottomBar,
             )
         }
         composable(Routes.ADD_RECIPE) {
@@ -108,7 +112,7 @@ fun AppNav() {
                 onSave = { name, instructions, ingredientIds ->
                     recipesVM.addRecipe(name, instructions, ingredientIds)
                     navController.popBackStack()
-                }
+                },
             )
         }
     }

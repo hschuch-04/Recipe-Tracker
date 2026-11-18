@@ -5,21 +5,21 @@ import androidx.room.Delete
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.Insert
+import androidx.room.Junction
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Relation
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import kotlinx.coroutines.flow.Flow
-import androidx.room.Index
-import androidx.room.Junction
-import androidx.room.Relation
 import androidx.room.Transaction
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import kotlinx.coroutines.flow.Flow
 
 // Ingredients Table
-@Entity (tableName = "ingredients")
+@Entity(tableName = "ingredients")
 data class IngredientEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
@@ -27,7 +27,7 @@ data class IngredientEntity(
     val calories: Int,
     val protein: Double,
     val fat: Double,
-    val carbs: Double
+    val carbs: Double,
 )
 
 // Recipes Table
@@ -35,7 +35,7 @@ data class IngredientEntity(
 data class RecipeEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
-    val instructions: String
+    val instructions: String,
 )
 
 // The Linking Table for recipes which stores the ingredients
@@ -47,36 +47,33 @@ data class RecipeEntity(
             entity = RecipeEntity::class,
             parentColumns = ["id"],
             childColumns = ["recipeId"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = IngredientEntity::class,
             parentColumns = ["id"],
             childColumns = ["ingredientId"],
-            onDelete = ForeignKey.CASCADE
-        )
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
-    indices = [Index("ingredientId")]
+    indices = [Index("ingredientId")],
 )
-data class RecipeIngredientRef(
-    val recipeId: Long,
-    val ingredientId: Long,
-)
+data class RecipeIngredientRef(val recipeId: Long, val ingredientId: Long)
 
 data class RecipeWithIngredients(
     @Embedded val recipe: RecipeEntity,
     @Relation(
         parentColumn = "id",
         entityColumn = "id",
-        associateBy = Junction(
-            value = RecipeIngredientRef::class,
-            parentColumn = "recipeId",
-            entityColumn = "ingredientId"
-        )
+        associateBy =
+            Junction(
+                value = RecipeIngredientRef::class,
+                parentColumn = "recipeId",
+                entityColumn = "ingredientId",
+            ),
     )
-    val ingredients: List<IngredientEntity>
+    val ingredients: List<IngredientEntity>,
 )
-
 
 // Ingredients interface endpoints
 @Dao
@@ -114,41 +111,44 @@ abstract class RecipeDao {
     abstract suspend fun deleteRecipe(recipe: RecipeEntity)
 }
 
-/// The Database Class Setup and Creation
+// / The Database Class Setup and Creation
 @Database(
     entities = [IngredientEntity::class, RecipeEntity::class, RecipeIngredientRef::class],
     version = 2,
-    exportSchema = false
+    exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun ingredientDao(): IngredientDao
+
     abstract fun recipeDao(): RecipeDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null
 
-        private val MIGRATION_1_2 = object : Migration(1, 2) {
-            override fun migrate(db: SupportSQLiteDatabase) {
-                db.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `recipes` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `instructions` TEXT NOT NULL)"
-                )
-                db.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `recipe_ingredients` (`recipeId` INTEGER NOT NULL, `ingredientId` INTEGER NOT NULL, PRIMARY KEY(`recipeId`, `ingredientId`), FOREIGN KEY(`recipeId`) REFERENCES `recipes`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE, FOREIGN KEY (`ingredientId`) REFERENCES `ingredients`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE)"
-                )
-                db.execSQL("CREATE INDEX IF NOT EXISTS `index_recipe_ingredients_ingredientId` ON `recipe_ingredients` (`ingredientId`)")
+        private val MIGRATION_1_2 =
+            object : Migration(1, 2) {
+                override fun migrate(db: SupportSQLiteDatabase) {
+                    db.execSQL(
+                        "CREATE TABLE IF NOT EXISTS `recipes` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `instructions` TEXT NOT NULL)",
+                    )
+                    db.execSQL(
+                        "CREATE TABLE IF NOT EXISTS `recipe_ingredients` (`recipeId` INTEGER NOT NULL, `ingredientId` INTEGER NOT NULL, PRIMARY KEY(`recipeId`, `ingredientId`), FOREIGN KEY(`recipeId`) REFERENCES `recipes`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE, FOREIGN KEY (`ingredientId`) REFERENCES `ingredients`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE)",
+                    )
+                    db.execSQL(
+                        "CREATE INDEX IF NOT EXISTS `index_recipe_ingredients_ingredientId` ON `recipe_ingredients` (`ingredientId`)",
+                    )
+                }
             }
-        }
 
-        fun get(context: android.content.Context): AppDatabase =
-            INSTANCE ?: synchronized(this) {
-                Room.databaseBuilder(
+        fun get(context: android.content.Context): AppDatabase = INSTANCE ?: synchronized(this) {
+            Room
+                .databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "RecipeData.db"
-                )
-                    .addMigrations(MIGRATION_1_2)
-                    .build()
-                    .also { INSTANCE = it }
-            }
+                    "RecipeData.db",
+                ).addMigrations(MIGRATION_1_2)
+                .build()
+                .also { INSTANCE = it }
+        }
     }
 }

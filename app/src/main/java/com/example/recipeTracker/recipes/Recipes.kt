@@ -1,13 +1,13 @@
 package com.example.recipeTracker.recipes
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -42,22 +42,20 @@ import com.example.recipeTracker.R
 import com.example.recipeTracker.database.IngredientEntity
 import com.example.recipeTracker.database.RecipesViewModel
 
-
 // The Main Recipe Screen page
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipesPage(
     viewModel: RecipesViewModel,
     onAddClick: () -> Unit,
-    bottomBar: @Composable () -> Unit
+    bottomBar: @Composable () -> Unit,
 ) {
-
     val recipes by viewModel.recipes.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Recipes") }
+                title = { Text("Recipes") },
             )
         },
         bottomBar = bottomBar,
@@ -65,35 +63,36 @@ fun RecipesPage(
             FloatingActionButton(onClick = onAddClick) {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_add),
-                    contentDescription = "Add Recipe"
+                    contentDescription = "Add Recipe",
                 )
             }
-        }
+        },
     ) { padding ->
         LazyColumn(
             modifier = Modifier.padding(padding),
             contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             items(recipes, key = { it.recipe.id }) { item ->
                 Card(Modifier.fillMaxWidth()) {
                     Column(
                         Modifier.padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
                         Text(
                             item.recipe.name,
-                            style = MaterialTheme.typography.titleMedium
+                            style = MaterialTheme.typography.titleMedium,
                         )
                         Text(
                             item.ingredients.joinToString { it.name },
-                            style = MaterialTheme.typography.bodySmall
+                            style = MaterialTheme.typography.bodySmall,
                         )
                         if (item.recipe.instructions.isNotBlank()) {
                             Text(
                                 item.recipe.instructions,
                                 maxLines = 3,
-                                overflow = TextOverflow.Ellipsis)
+                                overflow = TextOverflow.Ellipsis,
+                            )
                         }
                     }
                 }
@@ -102,18 +101,16 @@ fun RecipesPage(
     }
 }
 
-
 // The add a recipe screen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddRecipeScreen(
     availableIngredients: List<IngredientEntity>,
     onBack: () -> Unit,
-    onSave: (name: String, instructions: String, ingredientIds: List<Long>) -> Unit
-)
-{
-    var name by rememberSaveable() { mutableStateOf("") }
-    var instructions by rememberSaveable { mutableStateOf("")}
+    onSave: (name: String, instructions: String, ingredientIds: List<Long>) -> Unit,
+) {
+    var name by rememberSaveable { mutableStateOf("") }
+    var instructions by rememberSaveable { mutableStateOf("") }
     val selectedIds = remember { mutableStateListOf<Long>() }
 
     // Only Check Name and Ingredients are mandatory
@@ -127,17 +124,17 @@ fun AddRecipeScreen(
                     IconButton(onClick = onBack) {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_back),
-                            contentDescription = "Back"
+                            contentDescription = "Back",
                         )
                     }
-                }
+                },
             )
-        }
+        },
     ) { padding ->
         LazyColumn(
             modifier = Modifier.padding(padding).fillMaxSize(),
             contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             item {
                 OutlinedTextField(
@@ -145,7 +142,7 @@ fun AddRecipeScreen(
                     onValueChange = { name = it },
                     label = { Text("Recipe Name") },
                     singleLine = false,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
 
@@ -153,7 +150,7 @@ fun AddRecipeScreen(
                 Text(
                     "Ingredients",
                     style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(top = 8.dp)
+                    modifier = Modifier.padding(top = 8.dp),
                 )
             }
 
@@ -166,18 +163,19 @@ fun AddRecipeScreen(
             items(availableIngredients, key = { it.id }) { ingredient ->
                 val checked = ingredient.id in selectedIds
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .toggleable(
-                            value = checked,
-                            role = Role.Checkbox,
-                            onValueChange = {
-                                if (it) selectedIds.add(ingredient.id) else selectedIds.remove(ingredient.id)
-                            }
-                        ),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .toggleable(
+                                value = checked,
+                                role = Role.Checkbox,
+                                onValueChange = {
+                                    if (it) selectedIds.add(ingredient.id) else selectedIds.remove(ingredient.id)
+                                },
+                            ),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Checkbox( checked = checked, onCheckedChange = null )
+                    Checkbox(checked = checked, onCheckedChange = null)
                     Spacer(Modifier.width(12.dp))
                     Text(ingredient.name)
                 }
@@ -189,15 +187,15 @@ fun AddRecipeScreen(
                     onValueChange = { instructions = it },
                     label = { Text("Instructions") },
                     minLines = 6,
-                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                 )
             }
 
             item {
                 Button(
-                    onClick = { onSave(name.trim(), instructions.trim(), selectedIds.toList())},
+                    onClick = { onSave(name.trim(), instructions.trim(), selectedIds.toList()) },
                     enabled = isValid,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text("Save Recipe")
                 }
@@ -205,5 +203,3 @@ fun AddRecipeScreen(
         }
     }
 }
-
-

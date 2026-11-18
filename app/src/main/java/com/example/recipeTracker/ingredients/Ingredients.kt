@@ -36,14 +36,10 @@ import com.example.recipeTracker.database.IngredientsViewModel
 import com.example.recipeTracker.reusables.DecimalField
 import com.example.recipeTracker.reusables.NumberField
 
-
 // Main Ingredients Screen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun IngredientsPage(
-    viewModel: IngredientsViewModel = viewModel(),
-    bottomBar: @Composable () -> Unit
-) {
+fun IngredientsPage(viewModel: IngredientsViewModel = viewModel(), bottomBar: @Composable () -> Unit) {
     val ingredients by viewModel.ingredients.collectAsStateWithLifecycle()
     val toast = Toast.makeText(LocalContext.current, "Ingredient has been removed.", Toast.LENGTH_SHORT)
     var showDialog by remember { mutableStateOf(false) }
@@ -51,7 +47,7 @@ fun IngredientsPage(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Ingredients") }
+                title = { Text("Ingredients") },
             )
         },
         bottomBar = bottomBar,
@@ -59,31 +55,32 @@ fun IngredientsPage(
             FloatingActionButton(onClick = { showDialog = true }) {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_add),
-                    contentDescription = "Add Ingredient"
+                    contentDescription = "Add Ingredient",
                 )
             }
-        }
-    )
-    { padding ->
+        },
+    ) { padding ->
         LazyColumn(
             modifier = Modifier.padding(padding),
             contentPadding = PaddingValues(4.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        )
-        {
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
             items(ingredients, key = { it.id }) { item ->
                 ListItem(
-                    modifier = Modifier.combinedClickable(
-                        onClick = {},
-                        onLongClick = {
-                            viewModel.deleteIngredient(item)
-                            toast.show()
-                        }
-                    ),
+                    modifier =
+                        Modifier.combinedClickable(
+                            onClick = {},
+                            onLongClick = {
+                                viewModel.deleteIngredient(item)
+                                toast.show()
+                            },
+                        ),
                     headlineContent = { Text(item.name) },
                     supportingContent = {
-                        Text("${item.grams} g  |  CAL ${item.calories}  P ${item.protein}  F ${item.fat}  C ${item.carbs}")
-                    }
+                        Text(
+                            "${item.grams} g  |  CAL ${item.calories}  P ${item.protein}  F ${item.fat}  C ${item.carbs}",
+                        )
+                    },
                 )
             }
         }
@@ -92,22 +89,20 @@ fun IngredientsPage(
     // Creates Add Ingredient Dialog window
     if (showDialog) {
         AddIngredientDialog(
-            onDismiss = {showDialog = false },
+            onDismiss = { showDialog = false },
             onConfirm = { name, grams, calories, protein, fat, carbs ->
                 viewModel.addIngredient(name, grams, calories, protein, fat, carbs)
                 showDialog = false
-            }
+            },
         )
     }
-
 }
-
 
 // Create an Alert Dialog Box with all the inputs required for an Ingredient Class
 @Composable
 fun AddIngredientDialog(
     onDismiss: () -> Unit,
-    onConfirm: (name: String, grams: Int, calories: Int, protein: Double, fat: Double, carbs: Double) -> Unit
+    onConfirm: (name: String, grams: Int, calories: Int, protein: Double, fat: Double, carbs: Double) -> Unit,
 ) {
     var name by remember { mutableStateOf("") }
     var grams by remember { mutableStateOf("") }
@@ -117,7 +112,8 @@ fun AddIngredientDialog(
     var carbs by remember { mutableStateOf("") }
 
     // Boolean to check inputs are valid
-    val isValid = name.isNotBlank() &&
+    val isValid =
+        name.isNotBlank() &&
             grams.toIntOrNull() != null &&
             calories.toIntOrNull() != null &&
             protein.toDoubleOrNull() != null &&
@@ -129,14 +125,14 @@ fun AddIngredientDialog(
         title = { Text("Add Ingredient") },
         text = {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text("Ingredient Name") },
                     singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 )
                 NumberField("Grams", grams) { grams = it }
                 NumberField("Calories", calories) { calories = it }
@@ -155,14 +151,13 @@ fun AddIngredientDialog(
                         calories.toInt(),
                         grams.toDouble(),
                         fat.toDouble(),
-                        carbs.toDouble()
-                        )
-                }
+                        carbs.toDouble(),
+                    )
+                },
             ) { Text("Add") }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) { Text("Cancel") }
-        }
-
+        },
     )
 }
