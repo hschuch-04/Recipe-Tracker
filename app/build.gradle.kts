@@ -2,16 +2,17 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
+    id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
 }
 
 android {
-    namespace = "com.example.recipe_tracker"
+    namespace = "com.example.recipeTracker"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.example.recipe_tracker"
+        applicationId = "com.example.recipeTracker"
         minSdk = 24
         targetSdk = 37
         versionCode = 1
@@ -35,6 +36,10 @@ android {
     buildFeatures {
         compose = true
     }
+}
+
+ktlint {
+    android = true
 }
 
 dependencies {
