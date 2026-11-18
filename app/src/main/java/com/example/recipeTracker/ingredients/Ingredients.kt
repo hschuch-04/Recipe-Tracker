@@ -1,4 +1,4 @@
-package com.example.recipe_tracker.ingredients
+package com.example.recipeTracker.ingredients
 
 import android.widget.Toast
 import androidx.compose.foundation.combinedClickable
@@ -14,7 +14,6 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -32,10 +31,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.recipe_tracker.R
-import com.example.recipe_tracker.database.IngredientsViewModel
-import com.example.recipe_tracker.reusables.DecimalField
-import com.example.recipe_tracker.reusables.NumberField
+import com.example.recipeTracker.R
+import com.example.recipeTracker.database.IngredientsViewModel
+import com.example.recipeTracker.reusables.DecimalField
+import com.example.recipeTracker.reusables.NumberField
 
 
 // Main Ingredients Screen

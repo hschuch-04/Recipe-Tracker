@@ -1,6 +1,5 @@
-package com.example.recipe_tracker.recipes
+package com.example.recipeTracker.recipes
 
-import android.R.attr.contentDescription
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,7 +24,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -40,9 +38,9 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.recipe_tracker.R
-import com.example.recipe_tracker.database.IngredientEntity
-import com.example.recipe_tracker.database.RecipesViewModel
+import com.example.recipeTracker.R
+import com.example.recipeTracker.database.IngredientEntity
+import com.example.recipeTracker.database.RecipesViewModel
 
 
 // The Main Recipe Screen page

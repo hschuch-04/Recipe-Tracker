@@ -1,4 +1,4 @@
-package com.example.recipe_tracker
+package com.example.recipeTracker
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -19,12 +19,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.recipe_tracker.database.IngredientsViewModel
-import com.example.recipe_tracker.database.RecipesViewModel
-import com.example.recipe_tracker.ingredients.IngredientsPage
-import com.example.recipe_tracker.recipes.AddRecipeScreen
-import com.example.recipe_tracker.recipes.RecipesPage
-import com.example.recipe_tracker.ui.theme.RecipeTrackerTheme
+import com.example.recipeTracker.database.IngredientsViewModel
+import com.example.recipeTracker.database.RecipesViewModel
+import com.example.recipeTracker.ingredients.IngredientsPage
+import com.example.recipeTracker.recipes.AddRecipeScreen
+import com.example.recipeTracker.recipes.RecipesPage
+import com.example.recipeTracker.ui.theme.RecipeTrackerTheme
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

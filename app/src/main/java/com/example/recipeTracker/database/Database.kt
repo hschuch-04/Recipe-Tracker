@@ -1,4 +1,4 @@
-package com.example.recipe_tracker.database
+package com.example.recipeTracker.database
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Delete

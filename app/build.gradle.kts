@@ -6,13 +6,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.recipe_tracker"
+    namespace = "com.example.recipeTracker"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.example.recipe_tracker"
+        applicationId = "com.example.recipeTracker"
         minSdk = 24
         targetSdk = 37
         versionCode = 1

@@ -1,4 +1,4 @@
-package com.example.recipe_tracker
+package com.example.recipeTracker
 
 import org.junit.Test
 

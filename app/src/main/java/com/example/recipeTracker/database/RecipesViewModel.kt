@@ -1,7 +1,6 @@
-package com.example.recipe_tracker.database
+package com.example.recipeTracker.database
 
 import android.app.Application
-import androidx.compose.ui.input.key.Key.Companion.I
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.SharingStarted

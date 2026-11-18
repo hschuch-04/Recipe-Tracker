@@ -1,4 +1,4 @@
-package com.example.recipe_tracker.database
+package com.example.recipeTracker.database
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
