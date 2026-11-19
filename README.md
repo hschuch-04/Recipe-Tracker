@@ -17,6 +17,8 @@ These were the main requirements and it didn't need to be super accurate. I didn
 
 This project greatly helped me understand the use of ViewModels and how they can hold logic and storing state. This was extremely important when it came to moving between different pages using the NavController keeping its state and kept the logic of the database not built into the screen itself. This was my first attempt at using Rooms also, and it took me sometime to get my head around creating the table, DAO, database and then using the ViewModel. What helped me understand this was comparing it to similar project using React and Node where you have your functions creating the database, tables, queries, and then use node as a way to interact with the Front End of the project.
 
+Something else I implemented for the first time is Continous Integration wiith Github Actions. I created a YML file that runs ktlint to check my coding syntax\styling to make sure it matches the standards for coding with Kotlin. I adjusted the styling slightly to match some of the nuance with Jetpack Compose to avoid some annoying errors that aren't necessarily syntax but semantics. This was done to learn the process after an interview where I realised I had no experience with anything in the CI/CD pipeline.
+
 
 ## The Results
 
